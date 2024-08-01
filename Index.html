@@ -1,0 +1,275 @@
+<!-- Programa desenvolvido por Lucas e Allison 1DSTB A ou DS12 -->
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="Bosch].webp" type="image/png">
+    <link rel="stylesheet" href="Font.css">
+    <title>BoschPay</title>
+    <style>
+        body {
+            font-family: 'Feather bold', sans-serif;
+            text-align: center;
+            margin: 0;
+            overflow: hidden;
+            background-color: #f0f0f0;
+        }
+
+        .value {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        @keyframes colorChange {
+            0% {
+                color: rgb(255, 0, 0);
+            }
+
+            33% {
+                color: rgb(0, 255, 0);
+            }
+
+            66% {
+                color: rgb(0, 0, 255);
+            }
+
+            100% {
+                color: rgb(255, 0, 0);
+            }
+        }
+
+        .texto {
+            font-size: 2.5rem;
+            font-weight: bold;
+            animation: colorChange 3s infinite;
+        }
+
+        .container {
+            position: relative;
+            width: 90vw;
+            max-width: 1200px;
+            height: 80vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+        }
+
+        #dvd-logo {
+            width: 10vw;
+            max-width: 150px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        #moving-image {
+            position: absolute;
+            width: 10vw;
+            max-width: 150px;
+            height: auto;
+            transition: left 0.1s linear, top 0.1s linear;
+        }
+
+        .timer-container {
+            border: 1px solid #000;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0.5rem;
+            width: 100%;
+            max-width: 300px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .timer {
+            font-size: 1.5rem;
+            color: #000;
+        }
+
+        .timertext {
+            font-size: 1.25rem;
+            color: #000;
+            margin-bottom: 0.5rem;
+        }
+
+        button {
+            width: 80%;
+            max-width: 120px;
+            height: 3rem;
+            margin: 0.5rem;
+            font-size: 1rem;
+        }
+
+        button:hover {
+            cursor: pointer;
+        }
+
+        @media (max-width: 600px) {
+            .texto {
+                font-size: 2rem;
+            }
+
+            .value {
+                font-size: 1.25rem;
+            }
+
+            .timer {
+                font-size: 1.25rem;
+            }
+
+            .timertext {
+                font-size: 1rem;
+            }
+
+            button {
+                width: 100%;
+                max-width: none;
+                font-size: 0.875rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <p class="texto">Quanto pingou hoje papai?</p>
+        <div class="value" id="valor">R$ 00,00</div>
+        <button id="incrementar-0-117">M+</button>
+        <button id="incrementar-0-585">M+5x</button>
+        <button id="incrementar-7-06">H+</button>
+        <div class="container">
+            <img src="dinheiro.webp" id="moving-image">
+            <img src="Bosch].webp" id="dvd-logo">
+            <div class="timer-container">
+                <div class="timertext" id="timertext">Horas para acabar o expediente:</div>
+                <div class="timer" id="timer">Carregando...</div>
+            </div>
+            <div class="timer-container">
+                <div class="timertext" id="timertext15">Horas para o pagamento dia 15:</div>
+                <div class="timer" id="timer15">Carregando...</div>
+            </div>
+            <div class="timer-container">
+                <div class="timertext" id="timertext30">Horas para o pagamento dia 30:</div>
+                <div class="timer" id="timer30">Carregando...</div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const incrementoPequeno = 0.117;
+        const incrementoGrande = 7.06;
+        const incrementoMedio = 0.585;
+
+        function atualizarValor(quantidade) {
+            const valorElement = document.getElementById('valor');
+            let valorAtual = parseFloat(valorElement.textContent.replace('R$ ', '').replace(',', '.'));
+
+            if (isNaN(valorAtual)) valorAtual = 0;
+
+            valorAtual += quantidade;
+            valorElement.textContent = `R$ ${valorAtual.toFixed(2).replace('.', ',')}`;
+        }
+
+        function atualizarValorAutomaticamente() {
+            atualizarValor(incrementoPequeno);
+        }
+
+        setInterval(atualizarValorAutomaticamente, 60000);
+
+        document.getElementById('incrementar-0-117').addEventListener('click', () => {
+            atualizarValor(incrementoPequeno);
+        });
+
+        document.getElementById('incrementar-7-06').addEventListener('click', () => {
+            atualizarValor(incrementoGrande);
+        });
+
+        document.getElementById('incrementar-0-585').addEventListener('click', () => {
+            atualizarValor(incrementoMedio);
+        });
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const logo = document.getElementById('dvd-logo');
+            const movingImage = document.getElementById('moving-image');
+            const container = document.querySelector('.container');
+            const containerWidth = container.clientWidth;
+            const containerHeight = container.clientHeight;
+            const logoWidth = logo.offsetWidth;
+            const logoHeight = logo.offsetHeight;
+            const imageWidth = movingImage.offsetWidth;
+            const imageHeight = movingImage.offsetHeight;
+
+            let x = Math.random() * (containerWidth - imageWidth);
+            let y = Math.random() * (containerHeight - imageHeight);
+            let xSpeed = 2;
+            let ySpeed = 2;
+
+            function updatePosition() {
+                x += xSpeed;
+                y += ySpeed;
+
+                if (x <= 0 || x + imageWidth >= containerWidth) {
+                    xSpeed *= -1;
+                }
+                if (y <= 0 || y + imageHeight >= containerHeight) {
+                    ySpeed *= -1;
+                }
+
+                movingImage.style.left = `${x}px`;
+                movingImage.style.top = `${y}px`;
+            }
+
+            function animate() {
+                updatePosition();
+                requestAnimationFrame(animate);
+            }
+
+            animate();
+        });
+
+        function startTimer(targetDate, elementId) {
+            const timerElement = document.getElementById(elementId);
+
+            function updateTimer() {
+                const now = new Date();
+                const timeRemaining = targetDate - now;
+
+                if (timeRemaining <= 0) {
+                    timerElement.textContent = "00 Days 00 Hours 00 Minutes 00 Seconds";
+                    clearInterval(timerInterval);
+                    return;
+                }
+
+                const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+
+                timerElement.textContent = `${String(days).padStart(2, '0')} Days ${String(hours).padStart(2, '0')} Hours ${String(minutes).padStart(2, '0')} Minutes ${String(seconds).padStart(2, '0')} Seconds`;
+            }
+
+            const timerInterval = setInterval(updateTimer, 1000);
+            updateTimer();
+        }
+
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = now.getMonth();
+
+        const endOfWorkday = new Date(year, month, now.getDate(), 17, 0, 0);
+        startTimer(endOfWorkday, 'timer');
+
+        const endTime15 = new Date(year, month, 15, 6, 0, 0);
+        startTimer(endTime15, 'timer15');
+
+        const endTime30 = new Date(year, month, 30, 6, 0, 0);
+        startTimer(endTime30, 'timer30');
+    </script>
+</body>
+
+</html>
